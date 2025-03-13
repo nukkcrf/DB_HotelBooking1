@@ -24,5 +24,10 @@ namespace DB_HotelBooking1.Models
             RoomType = roomType;
             ExtraBeds = extraBeds;
         }
+        public Room(string roomType, int extraBeds)
+        {
+            RoomType = roomType;
+            ExtraBeds = extraBeds;
+        }
     }
 }

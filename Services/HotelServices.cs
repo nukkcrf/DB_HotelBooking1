@@ -38,9 +38,9 @@ namespace DB_HotelBooking1.Services
         }
         //Update- Update a room
 
-        public void UpdateRoom(Room room)
+        public void UpdateRoom(int id, string newRoomType, int newExtraBeds)
         {
-            _ = _context.Rooms.Find(room.Id);
+            var room= _context.Rooms.Find(id);
             if (room != null)
             {
                 _context.Rooms.Update(room);
