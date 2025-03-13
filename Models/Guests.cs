@@ -12,13 +12,13 @@ namespace DB_HotelBooking1.Models
         public int Id { get; set; }
         public required string Name { get; set; }
         public required string Email { get; set; }
-        
-        public string? PhoneNumber { get; set; }
-
         public List<Booking> Bookings { get; set; } = new List<Booking>();
-        public ICollection<Booking> Bookings { get; set; }
-
-
-
+        public Guest() { }
+        public Guest(int id, string name, string email)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
     }
 }

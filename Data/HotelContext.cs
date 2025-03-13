@@ -16,7 +16,7 @@ namespace DB_HotelBooking1.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=DESKTOP-1VJGJ8I;Database=HotelDB;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer(@"Server=DESKTOP-1VJGJ8I;Database=HotelDB;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
 
