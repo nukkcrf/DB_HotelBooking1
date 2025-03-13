@@ -23,7 +23,7 @@ namespace DB_HotelBooking1
                 }
             }
 
-            Console.WriteLine("Hello, World!");
+            Console.WriteLine("Testing");
         }
     }
 }

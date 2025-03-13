@@ -5,6 +5,7 @@ namespace DB_HotelBooking1.Data
 {
     public class HotelContext : DbContext
     {
+        public HotelContext() { }
         public HotelContext(DbContextOptions<HotelContext> options) : base(options) { }
 
         public DbSet<Room> Rooms { get; set; }
@@ -16,7 +17,7 @@ namespace DB_HotelBooking1.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(@"Server=DESKTOP-1VJGJ8I;Database=HotelDB;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer(@"Server=GABRIEL_U;Database=HotelDB;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
 
