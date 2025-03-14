@@ -11,10 +11,10 @@ namespace DB_HotelBooking1
         static void Main(string[] args)
         {
             var options = new DbContextOptionsBuilder<HotelContext>()
-                .UseSqlServer("Server=GABRIEL_U;Database=DB_HotelBooking1;Trusted_Connection=True;")
+       .UseSqlServer("Server=GABRIEL_U;Database=DB_HotelBooking1;Trusted_Connection=True;TrustServerCertificate=True;")
                 .Options;
 
-            using (var context = new HotelContext(options)) // ✅ Transmitem `options`
+            using (var context = new HotelContext(options)) 
             {
                 var rooms = context.Rooms.ToList();
                 foreach (var room in rooms)
@@ -38,7 +38,8 @@ namespace DB_HotelBooking1
                 Console.WriteLine("4. Delete a room");
                 Console.WriteLine("5. Exit");
                 Console.WriteLine("Choose an option: ");
-                string option = Console.ReadLine();
+
+                string? option = Console.ReadLine();
 
                 switch (option)
 
@@ -77,13 +78,13 @@ namespace DB_HotelBooking1
 
 
                 }
-                Console.WriteLine("Exiting the Application. Goodye! ");
+                
 
              }
 
+            Console.WriteLine("Exiting the Application. Goodye! ");
 
-
-         }
+        }
     }
 }
 

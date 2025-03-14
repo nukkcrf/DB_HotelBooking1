@@ -10,7 +10,7 @@ namespace DB_HotelBooking1.Models
     {
 
         public int Id { get; set; }
-        public required string RoomType { get; set; }       //Single or double
+        public string RoomType { get; set; }       //Single or double
         public int ExtraBeds { get; set; }      //Max 2 extra beds
         public decimal Price { get; set; }
         public bool IsBooked { get; set; }
