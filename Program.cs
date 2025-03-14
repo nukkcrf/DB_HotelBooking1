@@ -32,14 +32,24 @@ namespace DB_HotelBooking1
             bool exit = false;
 
             while (!exit)
-            {
+            {      // Menu options for Guest and Booking management
+
                 Console.WriteLine("\n --- Hotel Management System ---");
                 Console.WriteLine("1. Add a room");
                 Console.WriteLine("2. List all rooms");
                 Console.WriteLine("3. Update a room");
                 Console.WriteLine("4. Delete a room");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("5. Add a guest");
+                Console.WriteLine("6. List all guests");
+                Console.WriteLine("7. Update a guest");
+                Console.WriteLine("8. Delete a guest");
+                Console.WriteLine("9. Add a booking");
+                Console.WriteLine("10. List all bookings");
+                Console.WriteLine("11. Update a booking");
+                Console.WriteLine("12. Cancel a booking");
+                Console.WriteLine("13. Exit");
                 Console.Write("Choose an option: ");
+
                 string? option = Console.ReadLine();
 
                 switch (option)
