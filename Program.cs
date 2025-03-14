@@ -33,21 +33,30 @@ namespace DB_HotelBooking1
 
             while (!exit)
             {      // Menu options for Guest and Booking management
+                Console.Clear();
+                Console.WriteLine("===============================================");
+                Console.WriteLine("\n    --- Hotel Management System ---");
+                Console.WriteLine("===============================================");
 
-                Console.WriteLine("\n --- Hotel Management System ---");
-                Console.WriteLine("1. Add a room");
-                Console.WriteLine("2. List all rooms");
-                Console.WriteLine("3. Update a room");
-                Console.WriteLine("4. Delete a room");
-                Console.WriteLine("5. Add a guest");
-                Console.WriteLine("6. List all guests");
-                Console.WriteLine("7. Update a guest");
-                Console.WriteLine("8. Delete a guest");
-                Console.WriteLine("9. Add a booking");
-                Console.WriteLine("10. List all bookings");
-                Console.WriteLine("11. Update a booking");
-                Console.WriteLine("12. Cancel a booking");
-                Console.WriteLine("13. Exit");
+                /*   Console.WriteLine("1. Book a room ");
+                     Console.WriteLine("2. Show available rooms");
+                     Console.WriteLine("3. Update a room");
+                     Console.WriteLine("4. Delete a room");
+                     Console.WriteLine("5. Add a guest");
+                     Console.WriteLine("6. List all guests");
+                     Console.WriteLine("7. Update a guest");
+                     Console.WriteLine("8. Delete a guest");
+                     Console.WriteLine("9. Add a booking");
+                     Console.WriteLine("10. List all bookings");
+                     Console.WriteLine("11. Update a booking");
+                     Console.WriteLine("12. Cancel a booking");
+                     Console.WriteLine("13. Exit");*/
+
+
+                Console.WriteLine("1. New booking ");
+                Console.WriteLine("2. Update a room");
+                Console.WriteLine("3. Delete a room");
+                Console.WriteLine("4. EXIT");
                 Console.Write("Choose an option: ");
 
                 string? option = Console.ReadLine();
@@ -55,6 +64,8 @@ namespace DB_HotelBooking1
                 switch (option)
                 {
                     case "1":
+                        hotelService.ListRooms();
+                                               //show just availble rooms!!
                         Console.Write("Enter room type: ");
                         string? roomType = Console.ReadLine();
                         if (string.IsNullOrWhiteSpace(roomType))
