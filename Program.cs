@@ -114,12 +114,14 @@ namespace DB_HotelBooking1
 
                         // Create the booking object
 
-                        Booking newBooking = new Booking
+                        Booking newBooking = new Booking()  
                         {
                             RoomId = roomId,
                             GuestId = guestId,
                             CheckIn = checkIn,
-                            CheckOut = checkOut
+                            CheckOut = checkOut,
+                            Room = new Room { Id = roomId },
+                            Guest = new Guest { Id = guestId ,Name = "....",Email = " mail@ example.com"}
                         };
 
                         // Add the booking using BookingService

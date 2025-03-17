@@ -19,6 +19,10 @@ namespace DB_HotelBooking1.Services
         // CREATE - Add a new booking
         public void AddBooking(Booking booking)
         {
+            // Ensure Guest and Room are properly tracked
+            _context.Attach(booking.Guest);
+            _context.Attach(booking.Room);
+
             _context.Bookings.Add(booking);
             _context.SaveChanges();
             Console.WriteLine("Booking added successfully!");
@@ -27,6 +31,7 @@ namespace DB_HotelBooking1.Services
         {
             _context.Bookings.Remove(booking);
             _context.SaveChanges();
+
             Console.WriteLine("Booking removed successfully!");
         }
         // READ - List all bookings
