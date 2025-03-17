@@ -1,130 +1,192 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DB_HotelBooking1.Data;
-using DB_HotelBooking1.Models;
-using System;
-using System.Linq;
+﻿using System;
 using DB_HotelBooking1.Services;
+using DB_HotelBooking1.Models;
 
 namespace DB_HotelBooking1
 {
     internal class Program
     {
+        // Instanțierea serviciilor existente
+        static BookingService bookingService = new BookingService();
+        static GuestService guestService = new GuestService();
+
         static void Main(string[] args)
         {
-            var options = new DbContextOptionsBuilder<HotelContext>()
-                .UseSqlServer("Server=GABRIEL_U;Database=DB_HotelBooking1;Trusted_Connection=True;TrustServerCertificate=True;")
-                .Options;
-
-            // Testing connection: list all rooms from the context
-            using (var context = new HotelContext(options))
-            {
-                var rooms = context.Rooms.ToList();
-                foreach (var room in rooms)
-                {
-                    Console.WriteLine($"Room {room.Id} is a {room.RoomType} room with {room.ExtraBeds} extra beds.");
-                }
-            }
-
-            Console.WriteLine("Testing");
-
-           
-            var hotelService = new HotelServices();
             bool exit = false;
-
             while (!exit)
-            {      // Menu options for Guest and Booking management
+            {
                 Console.Clear();
-                Console.WriteLine("===============================================");
-                Console.WriteLine("\n    --- Hotel Management System ---");
-                Console.WriteLine("===============================================");
-
-                /*   Console.WriteLine("1. Book a room ");
-                     Console.WriteLine("2. Show available rooms");
-                     Console.WriteLine("3. Update a room");
-                     Console.WriteLine("4. Delete a room");
-                     Console.WriteLine("5. Add a guest");
-                     Console.WriteLine("6. List all guests");
-                     Console.WriteLine("7. Update a guest");
-                     Console.WriteLine("8. Delete a guest");
-                     Console.WriteLine("9. Add a booking");
-                     Console.WriteLine("10. List all bookings");
-                     Console.WriteLine("11. Update a booking");
-                     Console.WriteLine("12. Cancel a booking");
-                     Console.WriteLine("13. Exit");*/
-
-
-                Console.WriteLine("1. New booking ");
-                Console.WriteLine("2. Update a room");
-                Console.WriteLine("3. Delete a room");
-                Console.WriteLine("4. EXIT");
+                Console.WriteLine("==============================================");
+                Console.WriteLine("         HOTEL MANAGEMENT SYSTEM              ");
+                Console.WriteLine("==============================================");
+                Console.WriteLine("1. New booking");
+                Console.WriteLine("2. Update booking");
+                Console.WriteLine("3. Cancel booking");
+                Console.WriteLine("4. See available rooms");
+                Console.WriteLine("5. Exit");
                 Console.Write("Choose an option: ");
-
                 string? option = Console.ReadLine();
 
                 switch (option)
                 {
                     case "1":
-                        hotelService.ListRooms();
-                                               //show just availble rooms!!
-                        Console.Write("Enter room type: ");
-                        string? roomType = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(roomType))
+                        // NEW BOOKING: Redirect to available rooms and guest selection
+                        Console.WriteLine("Available rooms:");
+                        bookingService.ListBookings();
+
+                        Console.Write("Enter the ID of the room you want to book: ");
+                        string? roomIdInput = Console.ReadLine();
+                        if (!int.TryParse(roomIdInput, out int roomId))
                         {
-                            Console.WriteLine("Room type cannot be empty.");
+                            Console.WriteLine("Invalid room ID.");
+                            Pause();
                             break;
                         }
 
-                        Console.Write("Enter number of extra beds: ");
-                        string? extraBedsInput = Console.ReadLine();
-                        if (!int.TryParse(extraBedsInput, out int extraBeds))
+                        // Ask if the guest is new or registered
+                        Console.Write("Is the guest new or registered? (Enter N for new, R for registered): ");
+                        string? guestType = Console.ReadLine();
+                        int guestId = 0;
+                        if (guestType?.ToUpper() == "N")
                         {
-                            Console.WriteLine("Invalid number for extra beds.");
+                            // New guest: use your existing GuestService method
+                            Console.Write("Enter guest name: ");
+                            string? guestName = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(guestName))
+                            {
+                                Console.WriteLine("Guest name cannot be empty.");
+                                Pause();
+                                break;
+                            }
+                            Console.Write("Enter guest email: ");
+                            string? guestEmail = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(guestEmail))
+                            {
+                                Console.WriteLine("Guest email cannot be empty.");
+                                Pause();
+                                break;
+                            }
+
+                            // Create and add the new guest using your GuestService
+                            Guest newGuest = new Guest { Name = guestName, Email = guestEmail };
+                            guestService.AddGuest(newGuest);
+
+                            // Assume the new guest's ID is set after insertion
+                            guestId = newGuest.Id;
+                        }
+                        else if (guestType?.ToUpper() == "R")
+                        {
+                            // Registered guest: list guests and ask for guest ID
+                            guestService.ListGuests();
+                            Console.Write("Enter your guest ID: ");
+                            string? guestIdInput = Console.ReadLine();
+                            if (!int.TryParse(guestIdInput, out guestId))
+                            {
+                                Console.WriteLine("Invalid guest ID.");
+                                Pause();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid option for guest type.");
+                            Pause();
                             break;
                         }
 
-                       
-                        Room room = new Room(roomType, extraBeds);
-                        hotelService.AddRoom(room);
+                        // Get check-in and check-out dates
+                        Console.Write("Enter check-in date (yyyy-MM-dd): ");
+                        string? checkInInput = Console.ReadLine();
+                        if (!DateTime.TryParse(checkInInput, out DateTime checkIn))
+                        {
+                            Console.WriteLine("Invalid date format.");
+                            Pause();
+                            break;
+                        }
+                        Console.Write("Enter check-out date (yyyy-MM-dd): ");
+                        string? checkOutInput = Console.ReadLine();
+                        if (!DateTime.TryParse(checkOutInput, out DateTime checkOut))
+                        {
+                            Console.WriteLine("Invalid date format.");
+                            Pause();
+                            break;
+                        }
+
+                        // Create the booking object
+
+                        Booking newBooking = new Booking
+                        {
+                            RoomId = roomId,
+                            GuestId = guestId,
+                            CheckIn = checkIn,
+                            CheckOut = checkOut
+                        };
+
+                        // Add the booking using BookingService
+                        bookingService.AddBooking(newBooking);
+                        Console.WriteLine("Booking created successfully!");
+                        Pause();
                         break;
 
                     case "2":
-                        hotelService.ListRooms();
+                        // Update booking logic here
+                        Console.Write("Enter the booking ID to update: ");
+                        string? updateIdInput = Console.ReadLine();
+                        if (!int.TryParse(updateIdInput, out int updateId))
+                        {
+                            Console.WriteLine("Invalid booking ID.");
+                            Pause();
+                            break;
+                        }
+                        Console.Write("Enter new check-in date (yyyy-MM-dd): ");
+                        string? newCheckInInput = Console.ReadLine();
+                        if (!DateTime.TryParse(newCheckInInput, out DateTime newCheckIn))
+                        {
+                            Console.WriteLine("Invalid date format.");
+                            Pause();
+                            break;
+                        }
+                        Console.Write("Enter new check-out date (yyyy-MM-dd): ");
+                        string? newCheckOutInput = Console.ReadLine();
+                        if (!DateTime.TryParse(newCheckOutInput, out DateTime newCheckOut))
+                        {
+                            Console.WriteLine("Invalid date format.");
+                            Pause();
+                            break;
+                        }
+                        bookingService.UpdateBooking(updateId, newCheckIn, newCheckOut);
+                        Console.WriteLine("Booking updated.");
+                        Pause();
                         break;
 
                     case "3":
-                        Console.Write("Enter the room ID to update: ");
-                        string? idInput = Console.ReadLine();
-                        if (!int.TryParse(idInput, out int id))
+                        // Cancel booking logic here
+                        Console.Write("Enter the booking ID to cancel: ");
+                        string? cancelIdInput = Console.ReadLine();
+                        if (!int.TryParse(cancelIdInput, out int cancelId))
                         {
-                            Console.WriteLine("Invalid room ID.");
+                            Console.WriteLine("Invalid booking ID.");
+                            Pause();
                             break;
                         }
-                        Console.Write("Enter new room type: ");
-                        string? newRoomType = Console.ReadLine();
-                        if (string.IsNullOrWhiteSpace(newRoomType))
+                        Console.Write("Are you sure you want to cancel the booking? (Y/N): ");
+                        string? confirmCancel = Console.ReadLine();
+                        if (confirmCancel?.ToUpper() == "Y")
                         {
-                            Console.WriteLine("New room type cannot be empty.");
-                            break;
+                            bookingService.DeleteBooking(cancelId);
+                            Console.WriteLine("Booking cancelled.");
                         }
-                        Console.Write("Enter new number of extra beds: ");
-                        string? newExtraBedsInput = Console.ReadLine();
-                        if (!int.TryParse(newExtraBedsInput, out int newExtraBeds))
+                        else
                         {
-                            Console.WriteLine("Invalid number for extra beds.");
-                            break;
+                            Console.WriteLine("Cancellation aborted.");
                         }
-                        hotelService.UpdateRoom(id, newRoomType, newExtraBeds);
+                        Pause();
                         break;
 
                     case "4":
-                        Console.Write("Enter the room ID to delete: ");
-                        string? deleteIdInput = Console.ReadLine();
-                        if (!int.TryParse(deleteIdInput, out int deleteId))
-                        {
-                            Console.WriteLine("Invalid room ID.");
-                            break;
-                        }
-                        hotelService.DeleteRoom(deleteId);
+                        // See available rooms
+                        bookingService.ListBookings();
+                        Pause();
                         break;
 
                     case "5":
@@ -133,11 +195,17 @@ namespace DB_HotelBooking1
 
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
+                        Pause();
                         break;
                 }
             }
+            Console.WriteLine("Exiting the application. Goodbye!");
+        }
 
-            Console.WriteLine("Exiting the Application. Goodbye!");
+        static void Pause()
+        {
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }
