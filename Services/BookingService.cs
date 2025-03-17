@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DB_HotelBooking1.Data;
 using DB_HotelBooking1.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DB_HotelBooking1.Services
 {
@@ -73,6 +74,35 @@ namespace DB_HotelBooking1.Services
             {
                 Console.WriteLine("Booking not found!");
             }
+        }
+        public void CreateInvoice(int bookingId)
+        {
+            var booking = _context.Bookings.Include(b => b.Room).FirstOrDefault(b => b.Id == bookingId);
+            if (booking != null)
+            {
+                var totalAmount = CalculateTotalAmount(booking);
+                var invoice = new Invoice
+                {
+                    BookingId = booking.Id,
+                    Booking = booking,
+                    TotalAmount = totalAmount,
+                    Date = DateTime.Now
+                };
+                _context.Invoices.Add(invoice);
+                _context.SaveChanges();
+                Console.WriteLine("Invoice created successfully!");
+            }
+            else
+            {
+                Console.WriteLine("Booking not found!");
+            }
+        }
+        private decimal CalculateTotalAmount(Booking booking)
+        {
+            // Calculate total amount based on room type and duration
+            var duration = (booking.CheckOut - booking.CheckIn).Days;
+            var roomRate = booking.Room.ExtraBeds > 0 ? 150 : 100;
+            return duration * roomRate;
         }
     }
 }
