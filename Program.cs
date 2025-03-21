@@ -23,7 +23,8 @@ namespace DB_HotelBooking1
                 Console.WriteLine("2. Update booking");
                 Console.WriteLine("3. Cancel booking");
                 Console.WriteLine("4. See available rooms");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine(("5. See bokings");
+                Console.WriteLine("6. Exit");
                 Console.Write("Choose an option: ");
                 string? option = Console.ReadLine();
 
@@ -187,11 +188,16 @@ namespace DB_HotelBooking1
 
                     case "4":
                         // See available rooms
+                        bookingService.ListAvailableRooms();
+                        Pause();
+                        break;
+                    case "5":
+                        // See bookings
                         bookingService.ListBookings();
                         Pause();
                         break;
 
-                    case "5":
+                    case "6":
                         exit = true;
                         break;
 

@@ -38,7 +38,7 @@ namespace DB_HotelBooking1.Services
         // READ - List all bookings
         public void ListBookings()
         {
-            var bookings = _context.Bookings.ToList();
+            var bookings = _context.Bookings.Include(b => b.Room).Include(b => b.Guest). ToList();
             foreach (var booking in bookings)
             {
                 Console.WriteLine($"Booking {booking.Id}: {booking.Room.RoomType}, {booking.Guest.Name}, {booking.CheckIn}, {booking.CheckOut}");
@@ -75,6 +75,17 @@ namespace DB_HotelBooking1.Services
                 Console.WriteLine("Booking not found!");
             }
         }
+
+        public void ListAvailableRooms()
+        {
+            // Select all rooms that are not booked
+            var availableRooms = _context.Rooms.Where(r => !r.IsBooked).ToList();
+            foreach (var room in availableRooms)
+            {
+                Console.WriteLine($"Room {room.Id}: {room.RoomType}, Extra Beds: {room.ExtraBeds}");
+            }
+        }
+
         public void CreateInvoice(int bookingId)
         {
             var booking = _context.Bookings.Include(b => b.Room).FirstOrDefault(b => b.Id == bookingId);
