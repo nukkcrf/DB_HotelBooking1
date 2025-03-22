@@ -20,18 +20,39 @@ namespace DB_HotelBooking1.Services
         // CREATE - Add a new booking
         public void AddBooking(Booking booking)
         {
-            // Ensure Guest and Room are properly tracked
-            _context.Attach(booking.Guest);
-            _context.Attach(booking.Room);
+            // Re-fetch Guest from database to ensure correct data is loaded
+            var guestFromDb = _context.Guests.FirstOrDefault(g => g.Id == booking.Guest.Id);
+            if (guestFromDb != null)
+            {
+                booking.Guest = guestFromDb;
+            }
+            else
+            {
+                // Dacă, din orice motiv, guest-ul nu există în DB, atașează-l
+                _context.Attach(booking.Guest);
+            }
+
+            // Similar pentru Room, dacă este necesar
+            var roomFromDb = _context.Rooms.FirstOrDefault(r => r.Id == booking.Room.Id);
+            if (roomFromDb != null)
+            {
+                booking.Room = roomFromDb;
+            }
+            else
+            {
+                _context.Attach(booking.Room);
+            }
 
             _context.Bookings.Add(booking);
             _context.SaveChanges();
             Console.WriteLine("Booking added successfully!");
         }
+
         public void RemoveBooking(Booking booking)
         {
             _context.Bookings.Remove(booking);
             _context.SaveChanges();
+
 
             Console.WriteLine("Booking removed successfully!");
         }
@@ -86,7 +107,7 @@ namespace DB_HotelBooking1.Services
             }
         }
 
-        public void CreateInvoice(int bookingId)
+        public Invoice CreateInvoice(int bookingId)
         {
             var booking = _context.Bookings.Include(b => b.Room).FirstOrDefault(b => b.Id == bookingId);
             if (booking != null)
@@ -102,10 +123,12 @@ namespace DB_HotelBooking1.Services
                 _context.Invoices.Add(invoice);
                 _context.SaveChanges();
                 Console.WriteLine("Invoice created successfully!");
+                return invoice;
             }
             else
             {
                 Console.WriteLine("Booking not found!");
+                return null;    
             }
         }
         private decimal CalculateTotalAmount(Booking booking)

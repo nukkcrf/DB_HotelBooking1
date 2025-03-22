@@ -23,8 +23,9 @@ namespace DB_HotelBooking1
                 Console.WriteLine("2. Update booking");
                 Console.WriteLine("3. Cancel booking");
                 Console.WriteLine("4. See available rooms");
-                Console.WriteLine(("5. See bokings");
+                Console.WriteLine("5. See bokings");
                 Console.WriteLine("6. Exit");
+
                 Console.Write("Choose an option: ");
                 string? option = Console.ReadLine();
 
@@ -33,7 +34,7 @@ namespace DB_HotelBooking1
                     case "1":
                         // NEW BOOKING: Redirect to available rooms and guest selection
                         Console.WriteLine("Available rooms:");
-                        bookingService.ListBookings();
+                        bookingService.ListAvailableRooms();
 
                         Console.Write("Enter the ID of the room you want to book: ");
                         string? roomIdInput = Console.ReadLine();
@@ -126,8 +127,19 @@ namespace DB_HotelBooking1
                         };
 
                         // Add the booking using BookingService
+                        
                         bookingService.AddBooking(newBooking);
                         Console.WriteLine("Booking created successfully!");
+                        // Generate invoice after booking creation.
+                        var invoice = bookingService.CreateInvoice(newBooking.Id);
+                        if (invoice != null)
+                        {
+                            Console.WriteLine("----- Invoice Details -----");
+                            Console.WriteLine($"Invoice ID: {invoice.Id}");
+                            Console.WriteLine($"Booking ID: {invoice.BookingId}");
+                            Console.WriteLine($"Total Amount: {invoice.TotalAmount:C}");
+                            Console.WriteLine($"Invoice Date: {invoice.Date}");
+                        }
                         Pause();
                         break;
 

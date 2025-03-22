@@ -20,7 +20,9 @@ namespace DB_HotelBooking1.Services
         {
             _context.Guests.Add(guest);
             _context.SaveChanges();
-            Console.WriteLine("Guest added successfully!");
+            _context.ChangeTracker.Clear(); // empty cache
+            Console.WriteLine($"Guest added: ID={guest.Id}, Name={guest.Name}, Email={guest.Email}, - " +
+                $"Guest added successfully!");
         }
 
         // READ - List all guests
