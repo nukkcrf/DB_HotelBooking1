@@ -134,11 +134,13 @@ namespace DB_HotelBooking1
                         var invoice = bookingService.CreateInvoice(newBooking.Id);
                         if (invoice != null)
                         {
+                            Console.WriteLine("============================");
                             Console.WriteLine("----- Invoice Details -----");
                             Console.WriteLine($"Invoice ID: {invoice.Id}");
                             Console.WriteLine($"Booking ID: {invoice.BookingId}");
                             Console.WriteLine($"Total Amount: {invoice.TotalAmount:C}");
                             Console.WriteLine($"Invoice Date: {invoice.Date}");
+                            Console.WriteLine("=============================");
                         }
                         Pause();
                         break;
