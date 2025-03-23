@@ -9,6 +9,7 @@ namespace DB_HotelBooking1
         // Instanțierea serviciilor existente
         static BookingService bookingService = new BookingService();
         static GuestService guestService = new GuestService();
+        static InvoiceService invoiceService = new InvoiceService();
 
         static void Main(string[] args)
         {
@@ -24,7 +25,8 @@ namespace DB_HotelBooking1
                 Console.WriteLine("3. Cancel booking");
                 Console.WriteLine("4. See available rooms");
                 Console.WriteLine("5. See bokings");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Show invoices");
+                Console.WriteLine("7. Exit");
 
                 Console.Write("Choose an option: ");
                 string? option = Console.ReadLine();
@@ -212,6 +214,11 @@ namespace DB_HotelBooking1
                         break;
 
                     case "6":
+                        invoiceService.ListInvoices();
+                        Pause();
+                        break;
+
+                    case "7":
                         exit = true;
                         break;
 
