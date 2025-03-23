@@ -14,7 +14,7 @@ namespace DB_HotelBooking1.Services
             _context = new HotelContext();
         }
 
-        // Metoda UpdateRoom actualizează un room pe baza parametrilor furnizați.
+        // Metoda UpdateRoom 
         public void UpdateRoom(int id, string roomType, int extraBeds, decimal price)
         {
             var room = _context.Rooms.FirstOrDefault(r => r.Id == id);
@@ -32,10 +32,10 @@ namespace DB_HotelBooking1.Services
             }
         }
 
-        // Metoda AddBooking adaugă o rezervare și se asigură că Guest și Room sunt urmărite corect.
+        // Metoda AddBooking 
         public void AddBooking(Booking booking)
         {
-            // Asigură-te că entitățile Guest și Room sunt atașate la context
+            // Guest and Room attach to context
             _context.Attach(booking.Guest);
             _context.Attach(booking.Room);
 
