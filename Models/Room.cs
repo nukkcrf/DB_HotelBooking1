@@ -10,7 +10,7 @@ namespace DB_HotelBooking1.Models
     {
 
         public int Id { get; set; }
-        public required string RoomType { get; set; }       //Single or double
+        public string RoomType { get; set; }       //Single or double
         public int ExtraBeds { get; set; }      //Max 2 extra beds
         public decimal Price { get; set; }
         public bool IsBooked { get; set; }
@@ -21,6 +21,11 @@ namespace DB_HotelBooking1.Models
         public Room(int id, string roomType,int extraBeds)
         {
             Id = id;
+            RoomType = roomType;
+            ExtraBeds = extraBeds;
+        }
+        public Room(string roomType, int extraBeds)
+        {
             RoomType = roomType;
             ExtraBeds = extraBeds;
         }
