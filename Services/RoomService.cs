@@ -12,8 +12,21 @@ namespace DB_HotelBooking1.Services
         public RoomService()
         {
             _context = new HotelContext();
+
         }
 
+        public void AddRoom(string roomType, int extraBeds, decimal price)
+        {
+            var room = new Room
+            {
+                RoomType = roomType,
+                ExtraBeds = extraBeds,
+                Price = price
+            };
+            _context.Rooms.Add(room);
+            _context.SaveChanges();
+            Console.WriteLine("Room added successfully!");
+        }
         // Metoda UpdateRoom 
         public void UpdateRoom(int id, string roomType, int extraBeds, decimal price)
         {

@@ -1,6 +1,8 @@
 ﻿using System;
 using DB_HotelBooking1.Services;
 using DB_HotelBooking1.Models;
+using DB_HotelBooking1.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace DB_HotelBooking1
 {
@@ -10,9 +12,12 @@ namespace DB_HotelBooking1
         static BookingService bookingService = new BookingService();
         static GuestService guestService = new GuestService();
         static InvoiceService invoiceService = new InvoiceService();
+        static HotelContext _hotelContext = new HotelContext();
+        static RoomService _roomService = new RoomService();
 
         static void Main(string[] args)
         {
+            _hotelContext.Database.Migrate();
             bool exit = false;
             while (!exit)
             {
@@ -27,6 +32,8 @@ namespace DB_HotelBooking1
                 Console.WriteLine("5. See bokings");
                 Console.WriteLine("6. Show invoices");
                 Console.WriteLine("7. Exit");
+                Console.WriteLine("8. Add room");
+
 
                 Console.Write("Choose an option: ");
                 string? option = Console.ReadLine();
@@ -117,7 +124,12 @@ namespace DB_HotelBooking1
                         }
 
                         // Create the booking object
+                        if (!IsBookingDateValid(checkIn, checkOut))
+                        {
+                            Pause(); 
+                            break;
 
+                        }
                         Booking newBooking = new Booking()  
                         {
                             RoomId = roomId,
@@ -173,6 +185,11 @@ namespace DB_HotelBooking1
                             Pause();
                             break;
                         }
+                        if (!IsBookingDateValid(newCheckIn, newCheckOut))
+                        { 
+                            Pause();
+                            break; 
+                        }
                         bookingService.UpdateBooking(updateId, newCheckIn, newCheckOut);
                         Console.WriteLine("Booking updated.");
                         Pause();
@@ -218,10 +235,15 @@ namespace DB_HotelBooking1
                         Pause();
                         break;
 
+
                     case "7":
                         exit = true;
                         break;
 
+                    case "8":
+                       
+                        AddRoom();
+                        break;
                     default:
                         Console.WriteLine("Invalid option. Please try again.");
                         Pause();
@@ -229,6 +251,58 @@ namespace DB_HotelBooking1
                 }
             }
             Console.WriteLine("Exiting the application. Goodbye!");
+        }
+
+        public static bool IsBookingDateValid(DateTime checkInDate, DateTime checkOutDate)
+        {
+            // Get today's date without the time (e.g., 2025-04-11 00:00:00)
+            DateTime today = DateTime.Today;
+
+            // 1. Check if check-in date is in the past
+            if (checkInDate < today)
+            {
+                Console.WriteLine("Check-in date cannot be in the past.");
+                return false;
+            }
+
+            // 2. Check if check-out date is before or same as check-in date
+            if (checkOutDate <= checkInDate)
+            {
+                Console.WriteLine("Check-out date must be after check-in date.");
+                return false;
+            }
+
+            // If both conditions are OK
+            return true;
+        }
+        public static void AddRoom()
+        {
+            // Room Type
+            Console.Write("Enter room type (Single/Double): ");
+            string roomType = Console.ReadLine();
+
+            // Extra Beds
+            int extraBeds;
+            do
+            {
+                Console.Write("Enter number of extra beds (0 to 2): ");
+            }
+            while (!int.TryParse(Console.ReadLine(), out extraBeds) || extraBeds < 0 || extraBeds > 2);
+
+            // Price
+            decimal price;
+            do
+            {
+                Console.Write("Enter price: ");
+            }
+            while (!decimal.TryParse(Console.ReadLine(), out price) || price < 0);
+
+            // IsBooked
+            Console.Write("Is the room booked? (yes/no): ");
+            string bookedInput = Console.ReadLine()?.ToLower();
+            bool IsBooked = bookedInput == "yes" || bookedInput == "y";
+
+            _roomService.AddRoom(roomType, extraBeds, price);
         }
 
         static void Pause()
